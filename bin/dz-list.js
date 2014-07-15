@@ -92,13 +92,13 @@ function printVMTable(hosts) {
 	var t = new Table()
 	hosts.forEach(function(host) {
 		config.db.vms[host].forEach(function(vm) {
-			t.cell('host',     vm.host)
+			t.cell('host',     vm.host, Table.padLeft)
 			t.cell('uuid',     vm.uuid)
 			t.cell('type',     vm.type)
-			t.cell('ram',      Number(vm.ram))
-			t.cell('quota',    Number(vm.quota))
+			t.cell('ram',      Number(vm.ram), Table.padLeft)
+			t.cell('quota',    Number(vm.quota), Table.padLeft)
 			t.cell('state',    vm.state)
-			t.cell('hostname', vm.hostname)
+			t.cell('hostname', vm.hostname, Table.padLeft)
 			t.cell('alias',    vm.alias)
 			t.newRow()
 		})
