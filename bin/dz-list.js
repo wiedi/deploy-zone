@@ -5,7 +5,7 @@ var humanize = require('humanize')
 var Table = require('easy-table')
 var config = new (require('../lib/config'))()
 var ssh = require('../lib/ssh').ssh
-
+var split_with_escape = require('../lib/util').split_with_escape
 
 program
 	.usage('<uuid>')
@@ -58,7 +58,7 @@ function updateCache(hosts, cb) {
 			}
 			var vmlist = []
 			stdout.trim().split("\n").forEach(function(line) {
-				var line = line.match(/(\\.|[^:])+/g)
+				var line = split_with_escape(line)
 				if(line.length != 8) return
 				vmlist.push({
 					'host': host,
