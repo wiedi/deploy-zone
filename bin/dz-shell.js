@@ -8,11 +8,12 @@ program
 	.usage('<uuid>')
 	.option('-h, --host [host]', 'use host')
 	.option('-C, --console', 'connects to the zone console')
+	.option('-s, --ssh', 'connect with ssh to the hostname')
 	.parse(process.argv)
 
 if(program.args < 1) {
 	console.error('uuid required')
-	process.exit(1);
+	process.exit(1)
 }
 
 console(program)
@@ -30,6 +31,8 @@ function console(options) {
 	}
 	if(options.console) {
 		spawn("ssh", ['-t', host, "vmadm", "console", uuid], { stdio: 'inherit' })
+	} else if(options.ssh){
+		//spawn("ssh", ['-t', host, "vmadm", "console", uuid], { stdio: 'inherit' })
 	} else {
 		spawn("ssh", ['-t', host, "zlogin", uuid], { stdio: 'inherit' })
 	}
