@@ -65,9 +65,7 @@ function build(options) {
 			return
 		}
 
-		var cmds = [
-			"trap '{ rm -f $DZ_MANIFEST $DZ_MCV }' EXIT"
-		]
+		var cmds = []
 		var temporary_vm = false
 		if(!(base_vm)) {
 			if(!(base_img)) {
@@ -104,6 +102,7 @@ function build(options) {
 				"name": manifest.name,
 				"version": manifest.version
 			})))
+			cmds.push("trap \"rm -f ${DZ_MANIFEST} ${DZ_MCV}\" EXIT")
 
 			var result_handler = ''
 			if(output_path) {
