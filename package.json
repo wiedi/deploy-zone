@@ -7,6 +7,7 @@
     "dz-shell": "./bin/dz-shell.js",
     "dz-start": "./bin/dz-start.js",
     "dz-stop": "./bin/dz-stop.js",
+    "dz-build": "./bin/dz-build.js",
     "dz-create-mcv": "./bin/dz-create-mcv.sh"
   },
   "dependencies": {
@@ -22,5 +23,5 @@
   },
   "description": "deployment utility for zones",
   "name": "deploy-zone",
-  "version": "0.0.1"
+  "version": "0.0.2"
 }
