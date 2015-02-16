@@ -107,10 +107,10 @@ function build(options) {
 
 			var result_handler = ''
 			if(output_path) {
-				result_handler = '-p ' + shellescape([output_path])
+				result_handler = '-o ' + shellescape([output_path])
 			}
 			if(publish_url) {
-				result_handler = '-o ' + shellescape([publish_url])
+				result_handler = '-p ' + shellescape([publish_url])
 			}
 			cmds.push("imgadm create -c gzip -m $DZ_MANIFEST -s $DZ_MCV " + result_handler + " " + shellescape([base_vm]))
 
