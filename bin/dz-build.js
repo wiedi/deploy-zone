@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 "use strict"
 
+var fs          = require('fs')
 var execFile    = require('child_process').execFile
 var spawn       = require('child_process').spawn
 var program     = require('commander')
