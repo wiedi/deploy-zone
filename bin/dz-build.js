@@ -95,13 +95,25 @@ function build(options) {
 				console.log('Error: ' + stderr)
 				return
 			}
-			
-			cmds.push(heredoc_tmpfile("DZ_MCV", stdout))
-			cmds.push(heredoc_tmpfile("DZ_MANIFEST", JSON.stringify({
+
+			var img_manifest = {
 				"v": "2",
-				"name": manifest.name,
-				"version": manifest.version
-			})))
+				"public": true,
+				"name":        manifest.name,
+				"version":     manifest.version,
+				"description": manifest.description,
+				"homepage":    manifest.homepage,
+				"requirements": {}
+			}
+			if(manifest.minram) {
+				img_manifest.requirements['min_ram'] = manifest.minram
+			}
+			if(manifest.maxram) {
+				img_manifest.requirements['max_ram'] = manifest.maxram
+			}
+
+			cmds.push(heredoc_tmpfile("DZ_MCV", stdout))
+			cmds.push(heredoc_tmpfile("DZ_MANIFEST", JSON.stringify(img_manifest)))
 			cmds.push("trap \"rm -f ${DZ_MANIFEST} ${DZ_MCV}\" EXIT")
 
 			var result_handler = ''
