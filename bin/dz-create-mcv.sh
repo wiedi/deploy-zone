@@ -17,8 +17,12 @@ fail() {
 
 sanitycheck() {
 	[[ -d "${REPO}" ]]           || fail "Build repository ${REPO} doesn\'t exist"
-	[[ -f "${REPO}/manifest" ]]  || fail "Can't find manifest"
 	[[ -f "${REPO}/customize" ]] || fail "Can't find customize script"
+	[[ -n $name ]]               || fail "Env variable 'name' not set"
+	[[ -n $version ]]            || fail "Env variable 'version' not set"
+	[[ -n $organization ]]       || fail "Env variable 'organization' not set"
+	[[ -n $brand ]]              || fail "Env variable 'brand' not set"
+	[[ -n $homepage ]]           || fail "Env variable 'homepage' not set"
 }
 
 header() {
@@ -38,11 +42,6 @@ copyin() {
 	echo "__EOM__"
 	echo '}'
 	echo 'dump_archive | gtar -C / -x --no-same-owner'
-}
-
-read_manifest() {
-	# find something better...
-	source "${REPO}/manifest"
 }
 
 product() {
@@ -85,7 +84,6 @@ main() {
 	sanitycheck
 	header
 	copyin
-	read_manifest
 	product
 	motd
 	bootstrap

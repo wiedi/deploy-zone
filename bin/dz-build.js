@@ -7,6 +7,7 @@ var spawn       = require('child_process').spawn
 var program     = require('commander')
 var uuid        = require('node-uuid')
 var shellescape = require('shell-escape')
+var extend      = require('util')._extend
 var ssh         = require('../lib/ssh').ssh
 var heredoc_helper  = require('../lib/util').heredoc_helper
 var heredoc_tmpfile = require('../lib/util').heredoc_tmpfile
@@ -37,6 +38,30 @@ var default_template = {
 	}]
 }
 
+function read_manifest(repo, cb) {
+	if(fs.existsSync(repo + '/manifest.json')) {
+		var manifest = JSON.parse(fs.readFileSync(repo + '/manifest.json', 'utf8'))
+		cb(null, manifest)
+	} else {
+		console.log('Using legacy MIBE manifest')
+		parse_manifest(repo + '/manifest', cb)
+	}
+}
+
+function generate_mdata_tags(prefix, mdata) {
+	var tags = {}
+	tags[prefix + '_keys'] = Object.keys(mdata).join(' ')
+	Object.keys(mdata).forEach(function(key) {
+		if(mdata[key].description) {
+			tags[prefix + '_description:' + key] = mdata[key].description
+		}
+		if(mdata[key].type) {
+			tags[prefix + '_type:'        + key] = mdata[key].type
+		}
+	})
+	return tags
+}
+
 function build(options) {
 	var repo = options.args[0] || process.cwd()
 	var host = options.host || process.env.DZ_BUILD_HOST
@@ -59,7 +84,7 @@ function build(options) {
 		return
 	}
 
-	parse_manifest(repo + '/manifest', function(err, manifest) {
+	read_manifest(repo, function(err, manifest) {
 		if(err) {
 			console.log('Error reading manifest:', err)
 			return
@@ -90,7 +115,15 @@ function build(options) {
 			cmds.push("vmadm create <<'EOF'\n" + JSON.stringify(template) + "\nEOF\n")
 			
 		}
-		execFile(__dirname + "/dz-create-mcv.sh", [repo], {}, function(err, stdout, stderr) {
+		execFile(__dirname + "/dz-create-mcv.sh", [repo], {
+			'env': {
+				'name':         manifest.name,
+				'version':      manifest.version,
+				'organization': manifest.organization,
+				'brand':        manifest.brand,
+				'homepage':     manifest.homepage
+			}
+		}, function(err, stdout, stderr) {
 			if(err) {
 				console.log('Error: ' + stderr)
 				return
@@ -103,13 +136,28 @@ function build(options) {
 				"version":     manifest.version,
 				"description": manifest.description,
 				"homepage":    manifest.homepage,
-				"requirements": {}
+				"requirements": {},
+				"tags": {}
 			}
 			if(manifest.minram) {
 				img_manifest.requirements['min_ram'] = manifest.minram
 			}
 			if(manifest.maxram) {
 				img_manifest.requirements['max_ram'] = manifest.maxram
+			}
+
+			if(manifest.customer_metadata) {
+				img_manifest.tags = extend(
+					img_manifest.tags,
+					generate_mdata_tags('customer_metadata', manifest.customer_metadata)
+				)
+			}
+
+			if(manifest.internal_metadata) {
+				img_manifest.tags = extend(
+					img_manifest.tags,
+					generate_mdata_tags('internal_metadata', manifest.internal_metadata)
+				)
 			}
 
 			cmds.push(heredoc_tmpfile("DZ_MCV", stdout))
