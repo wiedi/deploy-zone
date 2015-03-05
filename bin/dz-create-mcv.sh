@@ -54,7 +54,7 @@ product() {
 
 motd() {
 	[[ ! -f "${REPO}/motd" ]] && return
-	echo "cat /etc/motd <<'__EOM__'"
+	echo "cat > /etc/motd <<'__EOM__'"
 	(sed	-e "s!%brand%!${brand}!g" \
 		-e "s!%name%!${name}!g" \
 		-e "s!%version%!${version}!g" \
