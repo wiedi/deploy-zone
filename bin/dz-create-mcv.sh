@@ -31,7 +31,8 @@ header() {
 	echo 'set -o pipefail'
 	echo 'set -o nounset'
 	echo 'export PATH=/opt/local/bin:/opt/local/sbin:/usr/bin:/usr/sbin'
-	echo 'trap "mdata-put prepare-image:state error" ERR'
+	echo 'function dzerror { mdata-put prepare-image:state error; tail -n +1 "/var/svc/log/system-zoneinit:default.log" "/var/svc/log/smartdc-mdata:execute.log" | mdata-put prepare-image:error; }'
+	echo 'trap dzerror ERR'
 	echo 'mdata-put prepare-image:state running'
 }
 
