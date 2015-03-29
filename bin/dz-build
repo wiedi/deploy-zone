@@ -163,6 +163,7 @@ function build(options) {
 			cmds.push(heredoc_tmpfile("DZ_MCV", stdout))
 			cmds.push(heredoc_tmpfile("DZ_MANIFEST", JSON.stringify(img_manifest)))
 			cmds.push("trap \"rm -f ${DZ_MANIFEST} ${DZ_MCV}\" EXIT")
+			cmds.push("trap \"status=1;\" ERR")
 
 			var result_handler = ''
 			if(output_path) {
@@ -176,10 +177,13 @@ function build(options) {
 			if(temporary_vm) {
 				cmds.push("vmadm delete " + base_vm)
 			}
+			cmds.push("exit ${status}")
 			var p = spawn("ssh", [host, "bash"], {stdio: ['pipe', process.stdout, process.stderr]})
 			p.stdin.write(cmds.join("\n"))
 			p.stdin.end("\n")
-			
+			p.on('exit', function(code, signal) {
+				process.exit(code)
+			});
 		})
 	})
 }
