@@ -163,7 +163,7 @@ function build(options) {
 			cmds.push(heredoc_tmpfile("DZ_MCV", stdout))
 			cmds.push(heredoc_tmpfile("DZ_MANIFEST", JSON.stringify(img_manifest)))
 			cmds.push("trap \"rm -f ${DZ_MANIFEST} ${DZ_MCV}\" EXIT")
-			cmds.push("trap \"status=1; trap - EXIT;\" ERR")
+			cmds.push("trap \"status=1;\" ERR")
 
 			var result_handler = ''
 			if(output_path) {
