@@ -1,18 +1,18 @@
 {
   "author": "Sebastian Wiedenroth <sebastian.wiedenroth@skylime.net>",
   "bin": {
-    "dz": "./bin/dz.js",
-    "dz-host": "./bin/dz-host.js",
-    "dz-list": "./bin/dz-list.js",
-    "dz-shell": "./bin/dz-shell.js",
-    "dz-start": "./bin/dz-start.js",
-    "dz-stop": "./bin/dz-stop.js",
-    "dz-build": "./bin/dz-build.js",
+    "dz": "./bin/dz",
+    "dz-host": "./bin/dz-host",
+    "dz-list": "./bin/dz-list",
+    "dz-shell": "./bin/dz-shell",
+    "dz-start": "./bin/dz-start",
+    "dz-stop": "./bin/dz-stop",
+    "dz-build": "./bin/dz-build",
     "dz-create-mcv": "./bin/dz-create-mcv.sh"
   },
   "dependencies": {
     "async": "0.9.x",
-    "commander": "2.2.x",
+    "commander": "2.7.x",
     "easy-table": "0.3.x",
     "humanize": "0.0.x",
     "mkdirp": "0.5.x",
