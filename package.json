@@ -23,5 +23,5 @@
   },
   "description": "deployment utility for zones",
   "name": "deploy-zone",
-  "version": "0.0.5"
+  "version": "0.0.6"
 }
