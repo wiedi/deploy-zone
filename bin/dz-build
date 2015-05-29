@@ -178,7 +178,7 @@ function build(options) {
 				cmds.push("vmadm delete " + base_vm)
 			}
 			cmds.push("exit ${status}")
-			var p = spawn("ssh", [host, "bash"], {stdio: ['pipe', process.stdout, process.stderr]})
+			var p = spawn("ssh", ["-S", "none", host, "bash"], {stdio: ['pipe', process.stdout, process.stderr]})
 			p.stdin.write(cmds.join("\n"))
 			p.stdin.end("\n")
 			p.on('exit', function(code, signal) {
