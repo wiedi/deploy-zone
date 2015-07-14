@@ -140,10 +140,10 @@ function build(options) {
 				"tags": {}
 			}
 			if(manifest.minram) {
-				img_manifest.requirements['min_ram'] = manifest.minram
+				img_manifest.requirements['min_ram'] = parseInt(manifest.minram)
 			}
 			if(manifest.maxram) {
-				img_manifest.requirements['max_ram'] = manifest.maxram
+				img_manifest.requirements['max_ram'] = parseInt(manifest.maxram)
 			}
 
 			if(manifest.customer_metadata) {
