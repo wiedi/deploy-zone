@@ -136,8 +136,18 @@ function build(options) {
 				"version":     manifest.version,
 				"description": manifest.description,
 				"homepage":    manifest.homepage,
-				"requirements": {},
+				"requirements": {
+					"networks": [
+						{
+							"description": "public",
+							"name": "net0"
+						}
+					]
+				},
 				"tags": {}
+			}
+			if(manifest.requirements) {
+				img_manifest.requirements = manifest.requirements
 			}
 			if(manifest.minram) {
 				img_manifest.requirements['min_ram'] = parseInt(manifest.minram)
