@@ -1,50 +1,91 @@
 #!/usr/bin/env node
 
 var program = require('commander')
-var request = require('request')
 var humanize = require('humanize')
 var Table = require('easy-table')
 var config = new (require('../lib/config'))()
-
+var ssh = require('../lib/ssh').ssh
+var split_with_escape = require('../lib/util').split_with_escape
 
 program
-	.usage('[pattern]')
+	.usage('<uuid>')
+	.option('-h, --host <host>', 'filter by host')
+	.option('-t, --tag <tag>', 'filter by tag or datacenter')
 	.option('-c, --cached', 'show cached results')
 	.parse(process.argv)
 
 
-var URL = 'http://datasets.at'
-var URL = 'https://images.joyent.com'
-
-list(program)
-function list(options) {
-	
-	request({
-		uri: URL + '/images',
-		json: true,
-		qs: {
-			limit: 20
-		}
-	}, function(error, response, body) {
-		if(error) {
-			console.log(error)
+function images(options) {
+	var hosts = []
+	if(options.host) {
+		if(!(options.host in config.db.hosts)) {
+			console.log('Unknown Host')
 			return
 		}
-		console.log(body)
-		printTable(body)
+		hosts = [options.host]
+	} else if(options.tag) {
+		hosts = config.getHostsByTag(options.tag)
+	} else {
+		hosts = Object.keys(config.db.hosts)
+	}
+	
+	if(options.cached) {
+		printImageTable(hosts)
+		return
+	}
+	
+	updateImageCache(hosts, function(err) {
+		if(err) {
+			if(err.length == hosts.length) {
+				console.log('Images update failed')
+				return
+			}
+			console.log('The following hosts failed: ' + err.join(','))
+			return
+		}
+		printImageTable(hosts)
 	})
 }
 
-function printTable(images) {
-	var t = new Table()
-	images.forEach(function(image) {
-		t.cell('uuid',      image.uuid)
-		t.cell('name',      image.owner + '/' + image.name)
-		t.cell('version',   image.version)
-		t.cell('published', image.published_at, function(d) {return humanize.relativeTime(new Date(d).getTime()/1000)})
-		t.newRow()
-	})
-	//t.sort(['host', 'ram|des', 'quota|des', 'uuid'])
-	console.log(t.toString())
-	
+function updateImageCache(hosts, cb) {
+	var done = 0
+	var failedHosts = []
+	hosts.forEach(function(host) {
+		ssh(host, ['imgadm', 'list', '-j'], function(err, stdout, stderr) {
+			if(err) {
+				failedHosts.push(host)
+				return
+			}
+			config.db.images[host] = JSON.parse(stdout)
+			done++;
+			if(done == hosts.length) {
+				config.save()
+				config.load()
+				if(failedHosts.length > 0) {
+					cb(failedHosts)
+				}
+				cb(null)
+
+			}
+		})
+	})	
 }
+
+function printImageTable(hosts) {
+	var t = new Table()
+	hosts.forEach(function(host) {
+		config.db.images[host].forEach(function(image) {
+			t.cell('host',     host, Table.padLeft)
+			t.cell('uuid',     image.manifest.uuid)
+			t.cell('name',     image.manifest.name)
+			t.cell('os',       image.manifest.os)
+			t.cell('type',     image.manifest.type)
+			t.cell('published',image.manifest.published_at)
+			t.newRow()
+		})
+	})
+	t.sort(['host', 'ram|des', 'quota|des', 'uuid'])
+	console.log(t.toString())
+}
+
+images(program)
