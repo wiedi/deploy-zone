@@ -92,9 +92,16 @@ function printVMTable(hosts) {
 	var t = new Table()
 	hosts.forEach(function(host) {
 		config.db.vms[host].forEach(function(vm) {
+			var image = '-'
+			if(vm.image_uuid in config.db.index.imageByUUID) {
+				image = config.db.index.imageByUUID[vm.image_uuid].manifest.name + ':' +
+					    config.db.index.imageByUUID[vm.image_uuid].manifest.version
+			}
+
 			t.cell('host',     vm.host, Table.padLeft)
 			t.cell('uuid',     vm.uuid)
 			t.cell('type',     vm.type)
+			t.cell('image',    image),
 			t.cell('ram',      Number(vm.ram), Table.padLeft)
 			t.cell('quota',    Number(vm.quota), Table.padLeft)
 			t.cell('state',    vm.state)
