@@ -9,28 +9,15 @@ var split_with_escape = require('../lib/util').split_with_escape
 
 program
 	.usage('<uuid>')
-	.option('-h, --host <host>', 'filter by host')
-	.option('-t, --tag <tag>', 'filter by tag or datacenter')
 	.option('-c, --cached', 'show cached results')
 	.parse(process.argv)
 
 
 function images(options) {
-	var hosts = []
-	if(options.host) {
-		if(!(options.host in config.db.hosts)) {
-			console.log('Unknown Host')
-			return
-		}
-		hosts = [options.host]
-	} else if(options.tag) {
-		hosts = config.getHostsByTag(options.tag)
-	} else {
-		hosts = Object.keys(config.db.hosts)
-	}
+	var hosts = Object.keys(config.db.hosts)
 	
 	if(options.cached) {
-		printImageTable(hosts)
+		printImageTable()
 		return
 	}
 	
@@ -43,7 +30,7 @@ function images(options) {
 			console.log('The following hosts failed: ' + err.join(','))
 			return
 		}
-		printImageTable(hosts)
+		printImageTable()
 	})
 }
 
@@ -65,26 +52,25 @@ function updateImageCache(hosts, cb) {
 					cb(failedHosts)
 				}
 				cb(null)
-
 			}
 		})
 	})	
 }
 
-function printImageTable(hosts) {
+function printImageTable() {
 	var t = new Table()
-	hosts.forEach(function(host) {
-		config.db.images[host].forEach(function(image) {
-			t.cell('host',     host, Table.padLeft)
-			t.cell('uuid',     image.manifest.uuid)
-			t.cell('name',     image.manifest.name)
-			t.cell('os',       image.manifest.os)
-			t.cell('type',     image.manifest.type)
-			t.cell('published',image.manifest.published_at)
-			t.newRow()
-		})
+	Object.keys(config.db.index.imageByUUID).forEach(function(uuid) {
+		var image = config.db.index.imageByUUID[uuid]
+		t.cell('uuid',     image.manifest.uuid)
+		t.cell('name',     image.manifest.name)
+		t.cell('version',  image.manifest.version)
+		t.cell('os',       image.manifest.os)
+		t.cell('type',     image.manifest.type)
+		t.cell('published',image.manifest.published_at)
+		t.newRow()
 	})
-	t.sort(['host', 'ram|des', 'quota|des', 'uuid'])
+
+	t.sort(['name', 'published', 'uuid'])
 	console.log(t.toString())
 }
 
