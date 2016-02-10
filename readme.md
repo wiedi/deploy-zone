@@ -81,8 +81,8 @@ In contrast to MIBE (which requires modifications to the global zone) the `dz bu
 
 ## Development status
 
-This is still very experimental. It started out as one weekends proof of concept.
-There are many bugs and user interface issues. Some commands (`dz images`, ...) are simply not working. There is no tab completion. There is no way to create new zones just yet. These are all bugs that I wish to fix and help with that is definitly welcome!
+This is still somewhat experimental. It started out as one weekends proof of concept.
+There are many bugs and user interface issues. There is no tab completion. There is no way to create new zones just yet. These are all bugs that I wish to fix and help with that is definitly welcome!
 
 Just be warned that this far from a finished product.
 
