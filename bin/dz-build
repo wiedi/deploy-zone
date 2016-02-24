@@ -70,6 +70,7 @@ function build(options) {
 	var template_file = options.template || process.env.DZ_BUILD_TEMPLATE
 	var output_path   = options.output   || process.env.DZ_BUILD_OUTPUT_PATH
 	var publish_url   = options.publish  || process.env.DZ_BUILD_PUBLISH_URL
+	var min_platform  = process.env.DZ_BUILD_MIN_PLATFORM
 
 	if(!(host)) {
 		if(!(base_vm)) {
@@ -154,6 +155,9 @@ function build(options) {
 			}
 			if(manifest.maxram) {
 				img_manifest.requirements['max_ram'] = parseInt(manifest.maxram)
+			}
+			if(min_platform) {
+				img_manifest.requirements['min_platform'] = {"7.0": min_platform}
 			}
 
 			if(manifest.customer_metadata) {
