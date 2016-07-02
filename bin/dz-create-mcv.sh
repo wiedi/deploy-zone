@@ -72,6 +72,7 @@ pkg() {
 	packages=$( (grep -e ^# -v "${REPO}/packages" || true ) | xargs)
 	[[ -z "$packages" ]] && return
 	echo "pkgin -f -y up"
+	echo "pkgin -y full-upgrade"
 	echo "pkg_add -v $packages"
 }
 
