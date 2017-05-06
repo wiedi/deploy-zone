@@ -16,9 +16,9 @@ if(program.args < 1) {
 	process.exit(1)
 }
 
-console(program)
+shell(program)
 
-function console(options) {
+function shell(options) {
 	var host = options.host
 	var uuid = options.args[0]
 	
