@@ -11,5 +11,5 @@ program
 	.command('stop <uuid>', 'stop vm')
 	.command('host', 'manage hosts')
 	.command('upgrade <uuid>', 'reprovision to new image')
-	.command('shell [-C] <uuid>', 'connect to console')
+	.command('shell [-C|-u user] <uuid>', 'connect to console')
 	.parse(process.argv)
