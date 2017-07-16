@@ -1,15 +1,29 @@
 #!/usr/bin/env node
 
-var program = require('commander')
+var spawn = require('child_process').spawn
 
-program
-	.version('0.0.1')
-	.command('build [mi-repo]', 'build image from mi-repository')
-	.command('images [pattern]', 'list or search available images')
-	.command('list', 'list vms')
-	.command('start <uuid>', 'start vm')
-	.command('stop <uuid>', 'stop vm')
-	.command('host', 'manage hosts')
-	.command('upgrade <uuid>', 'reprovision to new image')
-	.command('shell [-C|-u user] <uuid>', 'connect to console')
-	.parse(process.argv)
+function help() {
+  console.log('')
+  console.log('  Usage: dz [command] [options]')
+  console.log('')
+  console.log('')
+  console.log('  Commands')
+  console.log('')
+  console.log('    build [mi-repo]                             build image from mi-repository')
+  console.log('    images [pattern]                            list or search available images')
+  console.log('    list                                        list vms')
+  console.log('    start <uuid>                                start vm')
+  console.log('    stop <uuid>                                 stop vm')
+  console.log('    host                                        manage hosts')
+  console.log('    upgrade <uuid>                              reprovision to new image')
+  console.log('    shell [-C|-u user] <uuid> [-- <command>]    connect to console')
+  
+  process.exit(1)
+}
+
+var executable = process.argv[1] + '-' + process.argv[2]
+var args = process.argv.slice(3)
+
+var child = spawn(executable, args, { stdio: 'inherit', detached: true })
+child.on('exit', function(code) { process.exit(code) })
+child.on('error', function(err) { help() })

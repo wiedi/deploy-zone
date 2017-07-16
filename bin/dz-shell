@@ -5,7 +5,7 @@ var config = new (require('../lib/config'))()
 var spawn = require('child_process').spawn
 
 program
-	.usage('<uuid>')
+	.usage('<uuid> [-- <command>]')
 	.option('-h, --host [host]', 'use host')
 	.option('-C, --console', 'connects to the zone console')
 	.option('-u, --user [user]', 'connect with the specified user')
@@ -21,7 +21,8 @@ shell(program)
 function shell(options) {
 	var host = options.host
 	var user = options.user
-	var uuid = options.args[0]
+	var uuid = options.args.shift()
+	var command = options.args
 	
 	if(!(host)) {
 		host = config.getHostByUUID(uuid)
@@ -33,9 +34,10 @@ function shell(options) {
 	if(options.console) {
 		spawn("ssh", ['-t', host, "vmadm", "console", uuid], { stdio: 'inherit' })
 	} else if(options.user) {
-		spawn("ssh", ['-t', host, "zlogin", "-l", user, uuid], { stdio: 'inherit' })
+		var args = ['-t', host, "zlogin", "-l", user, uuid].concat(command)
+		spawn("ssh", args, { stdio: 'inherit' })
 	} else {
-		spawn("ssh", ['-t', host, "zlogin", uuid], { stdio: 'inherit' })
+		var args = ['-t', host, "zlogin", uuid].concat(command)
+		spawn("ssh", args, { stdio: 'inherit' })
 	}
-
 }
