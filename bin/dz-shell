@@ -8,7 +8,6 @@ program
 	.usage('<uuid>')
 	.option('-h, --host [host]', 'use host')
 	.option('-C, --console', 'connects to the zone console')
-	.option('-s, --ssh', 'connect with ssh to the hostname')
 	.option('-u, --user [user]', 'connect with the specified user')
 	.parse(process.argv)
 
@@ -33,8 +32,6 @@ function shell(options) {
 	}
 	if(options.console) {
 		spawn("ssh", ['-t', host, "vmadm", "console", uuid], { stdio: 'inherit' })
-	} else if(options.ssh){
-		//spawn("ssh", ['-t', host, "vmadm", "console", uuid], { stdio: 'inherit' })
 	} else if(options.user) {
 		spawn("ssh", ['-t', host, "zlogin", "-l", user, uuid], { stdio: 'inherit' })
 	} else {
