@@ -21,6 +21,10 @@ function help() {
   process.exit(1)
 }
 
+if (!process.argv[3]) {
+  help()
+}
+
 var executable = process.argv[1] + '-' + process.argv[2]
 var args = process.argv.slice(3)
 
