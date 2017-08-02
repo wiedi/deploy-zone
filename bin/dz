@@ -21,11 +21,11 @@ function help() {
   process.exit(1)
 }
 
-if (!process.argv[3]) {
+if (!process.argv[2]) {
   help()
 }
 
-var executable = process.argv[1] + '-' + process.argv[2]
+var executable = __dirname + '/dz-' + process.argv[2]
 var args = process.argv.slice(3)
 
 var child = spawn(executable, args, { stdio: 'inherit', detached: true })
