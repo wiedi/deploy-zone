@@ -21,7 +21,7 @@ function help() {
   process.exit(1)
 }
 
-if (!process.argv[3]) {
+if (!process.argv[2]) {
   help()
 }
 
