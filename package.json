@@ -17,7 +17,7 @@
     "humanize": "0.0.x",
     "mkdirp": "0.5.x",
     "node-uuid": "1.4.x",
-    "path-extra": "0.2.x",
+    "path-extra": "3.0.x",
     "request": "2.37.x",
     "shell-escape": "0.1.x"
   },
