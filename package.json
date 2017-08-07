@@ -4,6 +4,7 @@
     "dz": "./bin/dz",
     "dz-host": "./bin/dz-host",
     "dz-list": "./bin/dz-list",
+    "dz-images": "./bin/dz-images",
     "dz-shell": "./bin/dz-shell",
     "dz-start": "./bin/dz-start",
     "dz-stop": "./bin/dz-stop",
@@ -23,5 +24,5 @@
   },
   "description": "deployment utility for zones",
   "name": "deploy-zone",
-  "version": "0.1.0"
+  "version": "0.1.1"
 }
