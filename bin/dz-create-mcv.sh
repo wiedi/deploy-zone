@@ -39,7 +39,7 @@ header() {
 copyin() {
 	echo 'dump_archive() {'
 	echo "uudecode -p <<'__EOM__'"
-	(cd "${REPO}/copy" && tar -c . | uuencode -m -)
+	(cd "${REPO}/copy" && tar -cf - . | uuencode -m -)
 	echo "__EOM__"
 	echo '}'
 	echo 'dump_archive | gtar -C / -x --no-same-owner'
