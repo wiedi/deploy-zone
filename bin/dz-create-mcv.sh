@@ -69,7 +69,7 @@ bootstrap() {
 
 pkg() {
 	[[ ! -f "${REPO}/packages" ]] && return
-	packages=$( (grep -e ^# -v "${REPO}/packages" || true ) | xargs)
+	packages=$( (egrep -e ^# -v "${REPO}/packages" || true ) | xargs)
 	[[ -z "$packages" ]] && return
 	echo "pkgin -f -y up"
 	echo "pkgin -y full-upgrade"
